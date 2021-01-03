@@ -10,11 +10,13 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass // Entity가 자동으로 컬럼으로 인식합니다.
 @EntityListeners(AuditingEntityListener.class) // 생성/변경 시간을 자동으로 업데이트합니다.
-public abstract class Timestamped { // cannot be instantiated with the new keyword
+public abstract class Timestamped { // cannot be instantiated with the new keyword, has to be extended
 
     @CreatedDate
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
+
+
 }
