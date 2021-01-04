@@ -1,60 +1,5 @@
- $(document).ready(function () {
-    getMessages();
-})
-
-    function getMessages() {
-    $('#cards-box').empty();
-    $.ajax({
-    type: "GET",
-    url: "/api/memos",
-    data: {},
-    success: function (response) {
-    for (let i = 0; i < response.length; i++) {
-    let message = response[i];
-    let id = message['id'];
-    let username = message['username'];
-    let contents = message['contents'];
-    let modifiedAt = message['modifiedAt'];
-    addHTML(id, username, contents, modifiedAt);
-}
-}
-});
-}
-
-    function addHTML(id, username, contents, modifiedAt) {
-    let tempHtml = makeMessage(id, username, contents, modifiedAt);
-    $('#cards-box').append(tempHtml);
-}
-
-    function makeMessage(id, username, contents, modifiedAt, i) {
-    return `<div class="card">
-                        <!-- date/username 영역 -->
-            <div class="metadata">
-            <div class="date">
-            ${modifiedAt}
-            </div>
-            <div id="${id}-username" class="username">
-            ${username}
-            </div>
-            </div>
-                <!-- contents 조회/수정 영역-->
-            <div class="contents">
-            <div id="${id}-contents" class="text">
-            ${contents}
-            </div>
-            <div id="${id}-editarea" class="edit">
-            <textarea id="${id}-textarea" class="te-edit" name="" id="" cols="30" rows="5"></textarea>
-            </div>
-            </div>
-                <!-- 버튼 영역-->
-            <div class="footer">
-            <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editPost('${id}')">
-            <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
-            <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
-            </div>
-            </div>`;
-}
-
+ // 미리 작성된 영역 - 수정하지 않으셔도 됩니다.
+    // 사용자가 내용을 올바르게 입력하였는지 확인합니다.
     function isValidContents(contents) {
     if (contents == '') {
     alert('내용을 입력해주세요');
@@ -67,6 +12,7 @@
     return true;
 }
 
+    // 익명의 username을 만듭니다.
     function genRandomName(length) {
     let result = '';
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -79,28 +25,8 @@
     return result;
 }
 
-    function writePost() {
-    let contents = $('#contents').val();
-
-    if (isValidContents(contents) == false) {
-    return;
-}
-
-    let username = genRandomName(10);
-    let data = {'username': username, 'contents': contents};
-
-    $.ajax({
-    type: "POST",
-    url: "/api/memos",
-    contentType: "application/json",
-    data: JSON.stringify(data),
-    success: function (response) {
-    alert('메시지가 성공적으로 작성되었습니다.');
-    window.location.reload();
-}
-});
-}
-
+    // 수정 버튼을 눌렀을 때, 기존 작성 내용을 textarea 에 전달합니다.
+    // 숨길 버튼을 숨기고, 나타낼 버튼을 나타냅니다.
     function editPost(id) {
     showEdits(id);
     let contents = $(`#${id}-contents`).text().trim();
@@ -124,34 +50,44 @@
     $(`#${id}-contents`).show();
     $(`#${id}-edit`).show();
 }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 여기서부터 코드를 작성해주시면 됩니다.
 
+    $(document).ready(function () {
+    // HTML 문서를 로드할 때마다 실행합니다.
+    getMessages();
+})
+
+    // 메모를 불러와서 보여줍니다.
+    function getMessages() {
+    // 1. 기존 메모 내용을 지웁니다.
+    // 2. 메모 목록을 불러와서 HTML로 붙입니다.
+}
+
+    // 메모 하나를 HTML로 만들어서 body 태그 내 원하는 곳에 붙입니다.
+    function addHTML(id, username, contents, modifiedAt) {
+    // 1. HTML 태그를 만듭니다.
+    // 2. #cards-box 에 HTML을 붙인다.
+}
+
+    // 메모를 생성합니다.
+    function writePost() {
+    // 1. 작성한 메모를 불러옵니다.
+    // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
+    // 3. genRandomName 함수를 통해 익명의 username을 만듭니다.
+    // 4. 전달할 data JSON으로 만듭니다.
+    // 5. POST /api/memos 에 data를 전달합니다.
+}
+
+    // 메모를 수정합니다.
     function submitEdit(id) {
-    let username = $(`#${id}-username`).text().trim();
-    let contents = $(`#${id}-textarea`).val().trim();
-    if (isValidContents(contents) == false) {
-    return;
-}
-    let data = {'username': username, 'contents': contents};
-
-    $.ajax({
-    type: "PUT",
-    url: `/api/memos/${id}`,
-    contentType: "application/json",
-    data: JSON.stringify(data),
-    success: function (response) {
-    alert('메시지 변경에 성공하였습니다.');
-    window.location.reload();
-}
-});
+    // 1. 작성 대상 메모의 username과 contents 를 확인합니다.
+    // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
+    // 3. 전달할 data JSON으로 만듭니다.
+    // 4. PUT /api/memos/{id} 에 data를 전달합니다.
 }
 
+    // 메모를 삭제합니다.
     function deleteOne(id) {
-    $.ajax({
-        type: "DELETE",
-        url: `/api/memos/${id}`,
-        success: function (response) {
-            alert('메시지 삭제에 성공하였습니다.');
-            window.location.reload();
-        }
-    })
+    // 1. DELETE /api/memos/{id} 에 요청해서 메모를 삭제합니다.
 }
