@@ -83,6 +83,16 @@
     // 4. 전달할 data JSON으로 만듭니다.
         let data = {'username': username, 'contents': contents};
     // 5. POST /api/memos 에 data를 전달합니다.
+        $.ajax({
+            type: "POST",
+            url: "/api/memos",
+            contentType: "application/json", // JSON 형식으로 전달함을 알리기
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert('메시지가 성공적으로 작성되었습니다.');
+                window.location.reload();
+            }
+        });
 }
 
     // 메모를 수정합니다.
