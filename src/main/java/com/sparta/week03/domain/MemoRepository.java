@@ -6,5 +6,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MemoRepository extends JpaRepository<Memo, Long> {
-    List<Memo> findAllByCreatedAtBetweenOrderByCreatedAtDesc(LocalDateTime start, LocalDateTime end);
+    List<Memo> findAllByCreatedAtBetweenOrderByCreatedAtDesc(LocalDateTime yesterday, LocalDateTime now);
 }
